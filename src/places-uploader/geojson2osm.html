@@ -1,0 +1,41 @@
+<!-- This is just an example document, it isn't needed for anything -->
+
+<html>
+
+<head>
+<script src="./geojson2osm.js"></script>
+<script>
+var iD = {data: {presets: {}}};
+</script>
+<script src="http://insidemaps.nps.gov/dist/presets.js"></script>
+
+</head>
+
+<body>
+
+<script>
+
+var geo = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nps:preset": "Airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -105.64268589019775,
+          40.39772845452419
+        ]
+      }
+    }
+  ]
+};
+
+console.log(geojson2osm(geo, 1234, iD.data.presets.presets));
+
+</script>
+</body>
+</html>
