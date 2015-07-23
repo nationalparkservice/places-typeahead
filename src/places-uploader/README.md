@@ -13,7 +13,7 @@ This requires the file at http://insidemaps.nps.gov/dist_dev/land2.html to be mo
 The Line:
 `caller.postMessage(window.location.href, 'http://10.147.153.192:5001');`
 
-Need to be changed with the URL to the server where you are hosting the index.html
+Needs to be changed with the URL to the server where you are hosting the index.html
 
 1. Navigate to the index.html
 2. Login through the interface
