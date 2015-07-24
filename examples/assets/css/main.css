@@ -1,0 +1,51 @@
+/* Typeahead styles */
+.add-to-places {
+  background-color: #b28000;
+  border-top: 1px solid #996e00;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  outline: 0;
+  padding: 6px 12px;
+  text-decoration: none;
+}
+  .add-to-places:hover {
+    background-color: #7f5b00;
+    border-color: #5b4200;
+  }
+.fa-spinner {
+  display: none;
+  position: absolute;
+  right: 85px;
+  z-index: 2;
+  top: 10px;
+}
+.help-block {
+  margin-bottom: 0;
+}
+/* Example styles */
+#map {
+  height: 300px;
+  position: relative;
+  width: 100%;
+}
+#preview {
+  display: none;
+  margin-top: 15px;
+  padding: 9.5px;
+}
+  #preview .btn-primary {
+    margin-bottom: 5px;
+    padding: 8px;
+  }
+.nps-only {
+  color: #b94a48;
+  font-style: italic;
+}
+#park {
+  width: 244px;
+}
+.tt-dropdown-menu .tt-suggestion,
+.tt-menu .tt-suggestion {
+  padding: 6px 12px;
+}

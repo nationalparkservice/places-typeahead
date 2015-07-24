@@ -6,7 +6,7 @@ Autocomplete search for the National Park Service's Places system, built as a Bo
 
 ## Getting started
 
-You can load Bootstrap and Places Typeahead directly from the National Park Service's content delivery network:
+You can load Bootstrap and places-typeahead directly from the National Park Service's content delivery network:
 
     <link href="http://www.nps.gov/lib/bootstrap/3.3.2/css/nps-bootstrap.min.css" rel="stylesheet">
     <link href="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/latest/typeahead.min.css" rel="stylesheet">
@@ -17,7 +17,7 @@ Note that you'll also need to load jQuery into your page.
 
 ## Examples
 
-For some working examples of typeahead.js, visit the [examples page](http://www.nps.gov/tools/places/typeahead/).
+For some working examples of places-typeahead, visit the [examples page](http://www.nps.gov/tools/places/typeahead/).
 
 ## Browser Support
 
@@ -27,7 +27,7 @@ For some working examples of typeahead.js, visit the [examples page](http://www.
 * Internet Explorer 8+
 * Opera 11+
 
-**NOTE:** typeahead.js is not tested on mobile browsers.
+**NOTE:** places-typeahead is not tested on mobile browsers.
 
 ## Issues
 
@@ -53,7 +53,7 @@ Tests are written using [Jasmine](http://jasmine.github.io/) and run with [Karma
 
 ## Developers
 
-In order to build and test typeahead.js, you'll need to install its dev dependencies (`$ npm install`) and have [grunt-cli](https://github.com/gruntjs/grunt-cli) installed (`$ npm install -g grunt-cli`). Below is an overview of the available Grunt tasks that'll be useful in development:
+In order to build and test places-typeahead, you'll need to install its dev dependencies (`$ npm install`) and have [grunt-cli](https://github.com/gruntjs/grunt-cli) installed (`$ npm install -g grunt-cli`). Below is an overview of the available Grunt tasks that'll be useful in development:
 
 * `grunt build` – Builds *places-typeahead* from source.
 * `grunt lint` – Runs source and test files through JSHint.
