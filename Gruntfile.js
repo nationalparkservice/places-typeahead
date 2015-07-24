@@ -262,34 +262,13 @@ module.exports = function(grunt) {
 
   grunt.registerTask('manifests', 'Update manifests.', function(version) {
     var _ = grunt.util._,
-        pkg = grunt.file.readJSON('package.json'),
-        bower = grunt.file.readJSON('bower.json'),
-        jqueryPlugin = grunt.file.readJSON('typeahead.js.jquery.json');
-
-    bower = JSON.stringify(_.extend(bower, {
-      name: pkg.name,
-      version: version
-    }), null, 2);
-
-    jqueryPlugin = JSON.stringify(_.extend(jqueryPlugin, {
-      name: pkg.name,
-      title: pkg.name,
-      version: version,
-      author: pkg.author,
-      description: pkg.description,
-      keywords: pkg.keywords,
-      homepage: pkg.homepage,
-      bugs: pkg.bugs,
-      maintainers: pkg.contributors
-    }), null, 2);
+        pkg = grunt.file.readJSON('package.json');
 
     pkg = JSON.stringify(_.extend(pkg, {
       version: version
     }), null, 2);
 
     grunt.file.write('package.json', pkg);
-    grunt.file.write('bower.json', bower);
-    grunt.file.write('typeahead.js.jquery.json', jqueryPlugin);
   });
 
   // aliases
