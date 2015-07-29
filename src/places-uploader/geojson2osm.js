@@ -1,20 +1,20 @@
 /* exported geojson2osm */
-var geojson2osm = function(geojson, changeset, presets) {
-  var intersection = function intersection(arrayA, arrayB) {
+var geojson2osm = function (geojson, changeset, presets) {
+  var intersection = function intersection (arrayA, arrayB) {
       var returnValue = 0;
       for (var i = 0; i < arrayB.length; i++) {
         if (arrayA.indexOf(arrayB[i]) >= 0) returnValue++;
       }
       return returnValue;
     },
-    roundCoords = function roundCoords(coords) {
+    roundCoords = function roundCoords (coords) {
       for (var a = 0; a < coords.length; a++) {
         coords[a][0] = Math.round(coords[a][0] * 1000000) / 1000000;
         coords[a][1] = Math.round(coords[a][1] * 1000000) / 1000000;
       }
       return coords;
     },
-    propertiesToTags = function propertiesToTags(properties, geometry) {
+    propertiesToTags = function propertiesToTags (properties, geometry) {
       var tags = '';
       var newTags = {};
 
@@ -37,7 +37,6 @@ var geojson2osm = function(geojson, changeset, presets) {
       // This will require changing this from sync to async
       // Maybe have this added elsewhere?
 
-
       for (var tag in properties) {
         if (properties[tag] !== null) {
           tags += '<tag k="' + tag + '" v="' + properties[tag] + '"/>';
@@ -46,7 +45,7 @@ var geojson2osm = function(geojson, changeset, presets) {
       return tags;
     },
     count = -1,
-    Point = function Point(geo, properties) {
+    Point = function Point (geo, properties) {
       var nodes = '';
       var coord = roundCoords([geo.coordinates]);
       nodes += '<node id="' + count + '" lat="' + coord[0][1] + '" lon="' + coord[0][0] + '" changeset="' + changeset + '">';
@@ -57,7 +56,7 @@ var geojson2osm = function(geojson, changeset, presets) {
         nodes: nodes
       };
     },
-    LineString = function LineString(geo, properties) {
+    LineString = function LineString (geo, properties) {
       var nodes = '',
         ways = '';
       var coords = [];
@@ -76,7 +75,7 @@ var geojson2osm = function(geojson, changeset, presets) {
         ways: ways
       };
     },
-    MultiLineString = function MultiLineString(geo, properties) {
+    MultiLineString = function MultiLineString (geo, properties) {
       var nodes = '',
         ways = '';
 
@@ -97,7 +96,7 @@ var geojson2osm = function(geojson, changeset, presets) {
         ways: ways
       };
     },
-    Polygon = function Polygon(geo, properties) {
+    Polygon = function Polygon (geo, properties) {
       var nodes = '',
         ways = '';
       var coords = [];
@@ -117,7 +116,7 @@ var geojson2osm = function(geojson, changeset, presets) {
         ways: ways
       };
     },
-    createNodes = function createNodes(coords, repeatLastND) {
+    createNodes = function createNodes (coords, repeatLastND) {
       var nds = '',
         nodes = '',
         length = coords.length;
@@ -145,12 +144,12 @@ var geojson2osm = function(geojson, changeset, presets) {
         'nodes': nodes
       };
     },
-    togeojson = function togeojson(geo, properties) {
+    togeojson = function togeojson (geo, properties) {
       if (typeof geo === 'string') geo = JSON.parse(geo);
       var nodes = '',
         ways = '',
         relations = '',
-        append = function append(obj) {
+        append = function append (obj) {
           nodes += obj.nodes || '';
           ways += obj.ways || '';
           relations += obj.relations || '';
@@ -164,7 +163,7 @@ var geojson2osm = function(geojson, changeset, presets) {
         case 'MultiPoint':
           break;
         case 'LineString':
-          append(new LineString(geo, properties)); //if polygon is made with LineString,this working too.
+          append(new LineString(geo, properties)); // if polygon is made with LineString,this working too.
           break;
         case 'MultiLineString':
           append(new MultiLineString(geo, properties));
@@ -217,3 +216,4 @@ var geojson2osm = function(geojson, changeset, presets) {
   }
   return osmFile;
 };
+
