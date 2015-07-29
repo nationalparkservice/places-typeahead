@@ -1,0 +1,25 @@
+#map {
+  height: 300px;
+  position: relative;
+  width: 100%;
+}
+#preview {
+  display: none;
+  margin-top: 15px;
+  padding: 9.5px;
+}
+  #preview .btn-primary {
+    margin-bottom: 5px;
+    padding: 8px;
+  }
+.nps-only {
+  color: #b94a48;
+  font-style: italic;
+}
+#park {
+  width: 244px;
+}
+.tt-dropdown-menu .tt-suggestion,
+.tt-menu .tt-suggestion {
+  padding: 6px 12px;
+}

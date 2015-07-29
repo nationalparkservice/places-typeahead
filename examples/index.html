@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Typeahead | Places | Tools | NPMap</title>
+    <link href="http://www.nps.gov/lib/bootstrap/3.3.2/css/nps-bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../dist/typeahead.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link href="http://www.nps.gov/lib/assets/img/favicon.ico" rel="shortcut icon">
+    <link href="http://www.nps.gov/lib/assets/img/apple-touch-icon-144x144-precomposed.png" rel="apple-touch-icon-precomposed" sizes="144x144">
+    <link href="http://www.nps.gov/lib/assets/img/apple-touch-icon-114x114-precomposed.png" rel="apple-touch-icon-precomposed" sizes="114x114">
+    <link href="http://www.nps.gov/lib/assets/img/apple-touch-icon-72x72-precomposed.png" rel="apple-touch-icon-precomposed" sizes="72x72">
+    <link href="http://www.nps.gov/lib/assets/img/apple-touch-icon-57x57-precomposed.png" rel="apple-touch-icon-precomposed">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Places Typeahead</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <p>Start typing to search for points of interest in the National Park Service's Places system.</p>
+          <p><strong>Note:</strong> This is a prototype and the datasets used should be considered inaccurate and incomplete. We are actively improving the quality and coverage of Places. Improvements made are reflected in near real-time here.</p>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom:10px;">
+        <div class="col-md-6">
+          <div class="input-group">
+            <input autocomplete="false" class="form-control typeahead" placeholder="Search Places..." type="text">
+            <i class="fa fa-lg fa-spin fa-spinner"></i>
+            <span class="input-group-btn">
+              <button class="btn btn-primary" onclick="return false;" style="float:right;width:75px;">
+                <i class="fa fa-filter" style="margin-right:3px;"></i> Filter
+              </button>
+            </span>
+          </div>
+          <p class="help-block">No filters applied.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div id="map"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="img-thumbnail" id="preview">
+            <p></p>
+            <div class="text-center">
+              <a class="btn btn-primary" href="#" target="_blank">Open in Places Editor</a><br><span class="nps-only">(NPS-only)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Usage</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <p>Load NPS Bootstrap, jQuery, and the CSS/JavaScript for the plugin:</p>
+          <pre><code>&lt;link href="http://www.nps.gov/lib/bootstrap/3.3.2/css/nps-bootstrap.min.css" rel="stylesheet"&gt;<br>&lt;link href="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/latest/typeahead.min.css" rel="stylesheet"&gt;<br>&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"&gt;&lt;/script&gt;<br>&lt;script src="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/latest/typeahead.bundle.min.js"&gt;&lt;/script&gt;</code></pre>
+          <p>Then insert an input and instantiate the plugin:</p>
+        </div>
+      </div>
+      <div class="gist row">
+        <div class="col-md-12">
+          <script src="https://gist.github.com/nateirwin/90b09317e6ae68c21b38.js"></script>
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="http://www.nps.gov/lib/bootstrap/3.3.2/js/nps-bootstrap.min.js"></script>
+    <script src="assets/libs/handlebars/handlebars.js"></script>
+    <script src="../dist/typeahead.bundle.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>

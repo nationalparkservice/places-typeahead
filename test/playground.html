@@ -170,8 +170,8 @@
       });
 
       var regexSymbols = new Bloodhound({
-        datumTokenizer: function(d) { 
-          return Bloodhound.tokenizers.whitespace(d.val); 
+        datumTokenizer: function(d) {
+          return Bloodhound.tokenizers.whitespace(d.val);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         local: [
@@ -192,15 +192,15 @@
       });
 
       var abc = new Bloodhound({
-        datumTokenizer: function(d) { 
-          return Bloodhound.tokenizers.whitespace(d.val); 
+        datumTokenizer: function(d) {
+          return Bloodhound.tokenizers.whitespace(d.val);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         local: [
-          { val: 'a' }, 
-          { val: 'ab' }, 
-          { val: 'abc' }, 
-          { val: 'abcd' }, 
+          { val: 'a' },
+          { val: 'ab' },
+          { val: 'abc' },
+          { val: 'abcd' },
           { val: 'abcde' }
         ]
       });
@@ -226,8 +226,8 @@
       });
 
       var ltr = new Bloodhound({
-        datumTokenizer: function(d) { 
-          return Bloodhound.tokenizers.whitespace(d.val); 
+        datumTokenizer: function(d) {
+          return Bloodhound.tokenizers.whitespace(d.val);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         local: [
@@ -250,8 +250,8 @@
       });
 
       var rtl = new Bloodhound({
-        datumTokenizer: function(d) { 
-          return Bloodhound.tokenizers.whitespace(d.val); 
+        datumTokenizer: function(d) {
+          return Bloodhound.tokenizers.whitespace(d.val);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         local: [
@@ -274,8 +274,8 @@
       });
 
       var mixed = new Bloodhound({
-        datumTokenizer: function(d) { 
-          return Bloodhound.tokenizers.whitespace(d.val); 
+        datumTokenizer: function(d) {
+          return Bloodhound.tokenizers.whitespace(d.val);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         local: [
@@ -311,13 +311,13 @@
       ].join(' '), logTypeaheadEvent);
 
       $('form').on('submit', logSubmitEvent);
-      
+
       function logSubmitEvent($e) {
-        var text; 
+        var text;
 
-        $e && $e.preventDefault(); 
+        $e && $e.preventDefault();
 
-        text = JSON.stringify($(this).serializeArray()); 
+        text = JSON.stringify($(this).serializeArray());
         writeToTextarea('submit', text);
       }
 
