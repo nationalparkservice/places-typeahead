@@ -1,6 +1,6 @@
 (function(e){if("function"==typeof bootstrap)bootstrap("osmauth",e);else if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeOsmAuth=e}else"undefined"!=typeof window?window.osmAuth=e():global.osmAuth=e()})(function(){var define,ses,bootstrap,module,exports;
-return (function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
 'use strict';
+return (function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
 
 var ohauth = require('ohauth'),
     xtend = require('xtend'),
@@ -37,12 +37,14 @@ module.exports = function(o) {
         // ## Getting a request token
         var params = timenonce(getAuth(o)),
             url = o.url + '/oauth/request_token';
+          var popup, modal;
 
         params.oauth_signature = ohauth.signature(
             o.oauth_secret, '',
             ohauth.baseString('POST', url, params));
 
         if (!o.singlepage) {
+          if (!o.modal) {
             // Create a 600x550 popup window in the center of the screen
             var w = 600, h = 550,
                 settings = [
@@ -50,8 +52,26 @@ module.exports = function(o) {
                     ['left', screen.width / 2 - w / 2],
                     ['top', screen.height / 2 - h / 2]].map(function(x) {
                         return x.join('=');
-                    }).join(','),
+                    }).join(',');
                 popup = window.open('about:blank', 'oauth_window', settings);
+          } else {
+            modal = function(loc) {
+              var modalWindow = document.createElement('div');
+              modalWindow.setAttribute('class', 'modal col5');
+              var iframe = document.createElement('iframe');
+              iframe.setAttribute('scrolling', 'no');
+              iframe.setAttribute('style', 'height:302px;width:302px;');
+              var content = document.createElement('div');
+              content.setAttribute('class', 'fillL');
+              content.appendChild(iframe);
+              modalWindow.appendChild(content);
+              iframe.setAttribute('src', loc);
+              $(modalWindow).modal('show');
+              return function() {
+                $(modalWindow).modal('hide');
+              };
+            };
+          }
         }
 
         // Request a request token. When this is complete, the popup
@@ -67,11 +87,14 @@ module.exports = function(o) {
             var authorize_url = o.url + '/oauth/authorize?' + ohauth.qsString({
                 oauth_token: resp.oauth_token,
                 //oauth_callback: location.href.replace('index.html', '').replace(/#.*/, '').replace(location.search, '') + o.landing
-                oauth_callback: 'http://insidemaps.nps.gov/dist_dev/land2.html'
+                oauth_callback: 'http://insidemaps.nps.gov/places/submit/land2.html'
             });
 
             if (o.singlepage) {
                 location.href = authorize_url;
+            } else if (modal){
+              console.log(authorize_url);
+                modal.remove = modal(authorize_url);
             } else {
                 popup.location = authorize_url;
             }
@@ -82,7 +105,11 @@ module.exports = function(o) {
         window.authComplete = function(token) {
             var oauth_token = ohauth.stringQs(token.split('?')[1]);
             get_access_token(oauth_token.oauth_token);
+            if (modal) {
+              modal.remove();
+            } else {
             delete window.authComplete;
+            }
         };
 
         // ## Getting an request token
