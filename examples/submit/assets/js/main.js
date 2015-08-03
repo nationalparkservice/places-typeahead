@@ -82,8 +82,6 @@ $(document).ready(function () {
     }, 100);
   }
   function uploadGeojson (geojson) {
-    var changeset = {};
-
     auth.xhr({
       content: '<osm><changeset version="0.3" generator="npmap-uploader"><tag k="created_by" v="places-uploader"/><tag k="locale" v="en-US"/><tag k="comment" v="Parking"/></changeset></osm>',
       method: 'PUT',
@@ -95,7 +93,7 @@ $(document).ready(function () {
       path: '/api/0.6/changeset/create'
     }, function (err, result) {
       if (!err && result) {
-        changeset = {
+        var changeset = {
           data: geojson2osm(geojson, result, iD.data.presets.presets),
           id: result
         };
@@ -115,7 +113,8 @@ $(document).ready(function () {
               path: '/api/0.6/changeset/' + changeset.id + '/close'
             }, function (e, r) {
               if (!e) {
-                // Show confirmation message.
+                // Show confirmation message and use window.postMessage to alert parent element that the point has been created.
+                NPMap.config.L.removeLayer(marker);
               }
             });
           }
