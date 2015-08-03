@@ -1,4 +1,4 @@
-/* globals $, geojson2osm, L, osmAuth */
+/* globals $, authComplete, geojson2osm, L, osmAuth */
 
 /*
 
@@ -17,16 +17,16 @@ var NPMap;
 
 $(document).ready(function () {
   var auth = osmAuth({
+    modal: true,
     oauth_consumer_key: 'F7zPYlVCqE2BUH9Hr4SsWZSOnrKjpug1EgqkbsSb',
     oauth_secret: 'rIkjpPcBNkMQxrqzcOvOC4RRuYupYr7k8mfP13H5',
-    url: 'http://10.147.153.193:8000',
-    modal: true
+    url: 'http://10.147.153.193:8000'
   });
+  var s = document.createElement('script');
   var $name;
   var $type;
   var marker;
   var name;
-  var s = document.createElement('script');
   var type;
   var types;
 
@@ -42,7 +42,6 @@ $(document).ready(function () {
     $name.focus();
     $type.val(type);
   }
-
   function generateForm () {
     var interval = setInterval(function () {
       $name = $('#name');
@@ -66,8 +65,6 @@ $(document).ready(function () {
           var geojson = marker.toGeoJSON();
           geojson.properties.name = name;
           geojson.properties['nps:preset'] = type;
-          console.log(geojson);
-          // console.log(geojson2osm(geojson, null, iD.data.presets.presets));
           uploadGeojson(geojson);
           return false;
         });
@@ -84,69 +81,57 @@ $(document).ready(function () {
       }
     }, 100);
   }
+  function uploadGeojson (geojson) {
+    var changeset = {};
+
+    auth.xhr({
+      content: '<osm><changeset version="0.3" generator="npmap-uploader"><tag k="created_by" v="places-uploader"/><tag k="locale" v="en-US"/><tag k="comment" v="Parking"/></changeset></osm>',
+      method: 'PUT',
+      options: {
+        header: {
+          'Content-Type': 'text/xml'
+        }
+      },
+      path: '/api/0.6/changeset/create'
+    }, function (err, result) {
+      if (!err && result) {
+        changeset = {
+          data: geojson2osm(geojson, result, iD.data.presets.presets),
+          id: result
+        };
+        auth.xhr({
+          content: changeset.data,
+          method: 'POST',
+          options: {
+            header: {
+              'Content-Type': 'text/xml'
+            }
+          },
+          path: '/api/0.6/changeset/' + changeset.id + '/upload'
+        }, function (e, r) {
+          if (!e) {
+            auth.xhr({
+              method: 'PUT',
+              path: '/api/0.6/changeset/' + changeset.id + '/close'
+            }, function (e, r) {
+              if (!e) {
+                // Show confirmation message.
+              }
+            });
+          }
+        });
+      }
+    });
+  }
 
   auth.xhr({
     method: 'GET',
     path: '/api/0.6/user/details'
   }, function (error, response) {
-    console.log(error);
-    console.log(response);
-
     if (error) {
-      // Redirect them to the login screen.
-      auth.authenticate(function () {
-        console.log('success');
-      });
-    } else {
-      // Show the map.
+      auth.authenticate();
     }
   });
-
-  var uploadGeojson = function (geojson) {
-    var changeset = {};
-
-    // Create the Changeset
-    auth.xhr({
-      'method': 'PUT',
-      'path': '/api/0.6/changeset/create',
-      'content': '<osm><changeset version="0.3" generator="npmap-uploader"><tag k="created_by" v="npmap-uploader"/><tag k="locale" v="en-US"/><tag k="comment" v="Parking"/></changeset></osm>',
-      options: {
-        header: {
-          'Content-Type': 'text/xml'
-        }
-      }
-    }, function (err, result) {
-      if (!err && result) {
-        changeset = {
-          'data': geojson2osm(geojson, result, iD.data.presets.presets),
-          'id': result
-        };
-
-        // Update the changeset
-        auth.xhr({
-          'method': 'POST',
-          'path': '/api/0.6/changeset/' + changeset.id + '/upload',
-          'content': changeset.data,
-          options: {
-            header: {
-              'Content-Type': 'text/xml'
-            }
-          }
-        }, function (e, r) {
-          console.log('e', e, 'r', r);
-
-          // Close the changeset
-          auth.xhr({
-            'method': 'PUT',
-            'path': '/api/0.6/changeset/' + changeset.id + '/close'
-          }, function (e, r) {
-            console.log('e', e, 'r', r);
-          });
-        });
-      }
-    });
-  };
-
   NPMap = {
     baseLayers: [
       'nps-parkTilesImagery'
@@ -165,20 +150,20 @@ $(document).ready(function () {
           })
             .setContent('' +
               '<form>' +
-              '<div class="form-group">' +
-              '<label for="name">Name</label>' +
-              '<input class="form-control" id="name" type="text">' +
-              '</div>' +
-              '<div class="form-group">' +
-              '<label for="type=">Type</label>' +
-              '<select class="form-control" id="type">' +
-              '</select>' +
-              '</div>' +
-              '<div style="text-align:center;">' +
-              '<button class="btn btn-primary">Submit</button>' +
-              '</div>' +
+                '<div class="form-group">' +
+                  '<label for="name">Name</label>' +
+                  '<input class="form-control" id="name" type="text">' +
+                '</div>' +
+                '<div class="form-group">' +
+                  '<label for="type=">Type</label>' +
+                  '<select class="form-control" id="type">' +
+                  '</select>' +
+                '</div>' +
+                '<div style="text-align:center;">' +
+                  '<button class="btn btn-primary">Submit</button>' +
+                '</div>' +
               '</form>' +
-              '');
+            '');
 
           document.getElementsByClassName('panel-body')[0].childNodes[0].innerHTML = 'Drag the marker to position it then fill out and submit the form.';
           marker = L.marker(e.latlng, {
@@ -202,11 +187,11 @@ $(document).ready(function () {
         div.className = 'wrapper';
         div.innerHTML = '' +
           '<div class="panel panel-default">' +
-          '<div class="panel-body">' +
-          '<p>Click the map to add a location.</p>' +
+            '<div class="panel-body">' +
+              '<p>Click the map to add a location.</p>' +
+            '</div>' +
           '</div>' +
-          '</div>' +
-          '';
+        '';
         document.getElementsByClassName('npmap-container')[0].appendChild(div);
         L.npmap.util._.reqwest({
           success: function (response) {
@@ -236,17 +221,11 @@ $(document).ready(function () {
   };
   s.src = 'http://www.nps.gov/lib/npmap.js/2.0.0/npmap-bootstrap.min.js';
   document.body.appendChild(s);
-
-  window.addEventListener('message', receiveMessage, false);
-
-  function receiveMessage (event) {
-    if (event.origin !== 'http://insidemaps.nps.gov') {
+  window.addEventListener('message', function receiveMessage (e) {
+    if (e.origin !== 'http://insidemaps.nps.gov') {
       return;
     } else {
-      console.log(event);
-      authComplete(event.data);
+      authComplete(e.data);
     }
-  }
-
+  }, false);
 });
-

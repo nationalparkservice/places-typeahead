@@ -57,15 +57,17 @@ module.exports = function(o) {
           } else {
             modal = function(loc) {
               var modalWindow = document.createElement('div');
-              modalWindow.setAttribute('class', 'modal col5');
-              var iframe = document.createElement('iframe');
-              iframe.setAttribute('scrolling', 'no');
-              iframe.setAttribute('style', 'height:302px;width:302px;');
-              var content = document.createElement('div');
-              content.setAttribute('class', 'fillL');
-              content.appendChild(iframe);
-              modalWindow.appendChild(content);
-              iframe.setAttribute('src', loc);
+
+              modalWindow.innerHTML = '' +
+                '<div class="modal-dialog modal-sm">' +
+                  '<div class="modal-content" style="width:338px;">' +
+                    '<div class="modal-body">' +
+                      '<iframe src="' + loc + '" style="border:none;height:310px;"></iframe>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '';
+              modalWindow.setAttribute('class', 'modal');
               $(modalWindow).modal('show');
               return function() {
                 $(modalWindow).modal('hide');
@@ -93,7 +95,6 @@ module.exports = function(o) {
             if (o.singlepage) {
                 location.href = authorize_url;
             } else if (modal){
-              console.log(authorize_url);
                 modal.remove = modal(authorize_url);
             } else {
                 popup.location = authorize_url;
@@ -182,7 +183,6 @@ module.exports = function(o) {
     // A single XMLHttpRequest wrapper that does authenticated calls if the
     // user has logged in.
     oauth.xhr = function(options, callback) {
-      console.log(options);
         if (!oauth.authenticated()) {
             if (o.auto) return oauth.authenticate(run);
             else if (options.xhrOnly) return ohauth.rawxhr;
