@@ -42,6 +42,7 @@ $(document).ready(function () {
     $name.focus();
     $type.val(type);
   }
+
   function generateForm () {
     var interval = setInterval(function () {
       $name = $('#name');
@@ -65,7 +66,9 @@ $(document).ready(function () {
           var geojson = marker.toGeoJSON();
           geojson.properties.name = name;
           geojson.properties['nps:preset'] = type;
-          uploadGeojson(geojson);
+          uploadGeojson(geojson, function (uploadResult) {
+            console.log(uploadResult);
+          });
           return false;
         });
 
@@ -81,7 +84,10 @@ $(document).ready(function () {
       }
     }, 100);
   }
-  function uploadGeojson (geojson) {
+
+  function uploadGeojson (geojson, callback) {
+    var changeset = {};
+
     auth.xhr({
       content: '<osm><changeset version="0.3" generator="npmap-uploader"><tag k="created_by" v="places-uploader"/><tag k="locale" v="en-US"/><tag k="comment" v="Parking"/></changeset></osm>',
       method: 'PUT',
@@ -91,11 +97,11 @@ $(document).ready(function () {
         }
       },
       path: '/api/0.6/changeset/create'
-    }, function (err, result) {
-      if (!err && result) {
-        var changeset = {
-          data: geojson2osm(geojson, result, iD.data.presets.presets),
-          id: result
+    }, function (authError, authResult) {
+      if (!authError && authResult) {
+        changeset = {
+          data: geojson2osm(geojson, authResult, iD.data.presets.presets),
+          id: authResult
         };
         auth.xhr({
           content: changeset.data,
@@ -106,16 +112,27 @@ $(document).ready(function () {
             }
           },
           path: '/api/0.6/changeset/' + changeset.id + '/upload'
-        }, function (e, r) {
-          if (!e) {
+        }, function (uploadDataError, uploadDataResult) {
+          if (!uploadDataError) {
             auth.xhr({
               method: 'PUT',
               path: '/api/0.6/changeset/' + changeset.id + '/close'
-            }, function (e, r) {
-              if (!e) {
-                // Show confirmation message and use window.postMessage to alert parent element that the point has been created.
-                NPMap.config.L.removeLayer(marker);
-              }
+            }, function (closeChangesetError, closeChangesetResult) {
+              NPMap.config.L.removeLayer(marker);
+              callback({
+                'auth': {
+                  'error': authError,
+                  'result': authResult
+                },
+                'upload': {
+                  'error': uploadDataError,
+                  'result': uploadDataResult
+                },
+                'close': {
+                  'error': closeChangesetError,
+                  'result': closeChangesetResult
+                }
+              });
             });
           }
         });
@@ -149,20 +166,20 @@ $(document).ready(function () {
           })
             .setContent('' +
               '<form>' +
-                '<div class="form-group">' +
-                  '<label for="name">Name</label>' +
-                  '<input class="form-control" id="name" type="text">' +
-                '</div>' +
-                '<div class="form-group">' +
-                  '<label for="type=">Type</label>' +
-                  '<select class="form-control" id="type">' +
-                  '</select>' +
-                '</div>' +
-                '<div style="text-align:center;">' +
-                  '<button class="btn btn-primary">Submit</button>' +
-                '</div>' +
+              '<div class="form-group">' +
+              '<label for="name">Name</label>' +
+              '<input class="form-control" id="name" type="text">' +
+              '</div>' +
+              '<div class="form-group">' +
+              '<label for="type=">Type</label>' +
+              '<select class="form-control" id="type">' +
+              '</select>' +
+              '</div>' +
+              '<div style="text-align:center;">' +
+              '<button class="btn btn-primary">Submit</button>' +
+              '</div>' +
               '</form>' +
-            '');
+              '');
 
           document.getElementsByClassName('panel-body')[0].childNodes[0].innerHTML = 'Drag the marker to position it then fill out and submit the form.';
           marker = L.marker(e.latlng, {
@@ -186,11 +203,11 @@ $(document).ready(function () {
         div.className = 'wrapper';
         div.innerHTML = '' +
           '<div class="panel panel-default">' +
-            '<div class="panel-body">' +
-              '<p>Click the map to add a location.</p>' +
-            '</div>' +
+          '<div class="panel-body">' +
+          '<p>Click the map to add a location.</p>' +
           '</div>' +
-        '';
+          '</div>' +
+          '';
         document.getElementsByClassName('npmap-container')[0].appendChild(div);
         L.npmap.util._.reqwest({
           success: function (response) {
