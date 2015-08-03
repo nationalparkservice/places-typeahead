@@ -19,7 +19,7 @@ $(document).ready(function () {
   var auth = osmAuth({
     oauth_consumer_key: 'F7zPYlVCqE2BUH9Hr4SsWZSOnrKjpug1EgqkbsSb',
     oauth_secret: 'rIkjpPcBNkMQxrqzcOvOC4RRuYupYr7k8mfP13H5',
-    url: 'http://10.147.153.193',
+    url: 'http://10.147.153.193:8000',
     modal: true
   });
   var $name;
