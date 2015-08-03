@@ -1,4 +1,4 @@
-/* globals $, geojson2osm, L */
+/* globals $, geojson2osm, L, osmAuth */
 
 /*
 
@@ -16,6 +16,11 @@ var iD = {
 var NPMap;
 
 $(document).ready(function () {
+  var auth = osmAuth({
+    oauth_consumer_key: 'F7zPYlVCqE2BUH9Hr4SsWZSOnrKjpug1EgqkbsSb',
+    oauth_secret: 'rIkjpPcBNkMQxrqzcOvOC4RRuYupYr7k8mfP13H5',
+    url: 'http://10.147.153.193'
+  });
   var s = document.createElement('script');
   var $name;
   var $type;
@@ -60,7 +65,7 @@ $(document).ready(function () {
           geojson.properties.name = name;
           geojson.properties['nps:preset'] = type;
           console.log(geojson);
-          console.log(geojson2osm(geojson, 1234, iD.data.presets.presets));
+          console.log(geojson2osm(geojson, null, iD.data.presets.presets));
           return false;
         });
 
@@ -76,6 +81,23 @@ $(document).ready(function () {
       }
     }, 100);
   }
+
+  auth.xhr({
+    method: 'GET',
+    path: 'http://10.147.153.193/api/0.6/user/details'
+  }, function (error, response) {
+    console.log(error);
+    console.log(response);
+
+    if (error) {
+      // Redirect them to the login screen.
+      auth.authenticate(function () {
+        console.log('success');
+      });
+    } else {
+      // Show the map.
+    }
+  });
 
   NPMap = {
     baseLayers: [
