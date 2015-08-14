@@ -73,7 +73,7 @@ $(document).ready(function () {
         }),
         templates: {
           notFound: function (query) {
-            return '<div class="tt-selectable tt-suggestion" onclick="PlacesTypeahead.handleClick();return false;">Can\'t find a location? Add it to Places.</div>';
+            return '<div class="tt-selectable tt-suggestion" onclick="PlacesTypeahead.handleClick();return false;" onkeydown="console.log(1);return false;" tabindex="1">Can\'t find a location? Add it to Places.</div>';
           },
           suggestion: Handlebars.compile('' +
             '<div>' +
