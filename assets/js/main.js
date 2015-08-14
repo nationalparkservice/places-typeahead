@@ -16,7 +16,7 @@ How to handle points that don't exist? This should be another configuration opti
 Is it possible to "wrap" typeahead.js with the functionality you need and still make it a Bootstrap plugin?
 */
 
-var App = {};
+var PlacesTypeahead = {};
 
 $(document).ready(function () {
   var $preview = $('#preview');
@@ -73,7 +73,7 @@ $(document).ready(function () {
         }),
         templates: {
           notFound: function (query) {
-            return '<div class="tt-selectable tt-suggestion" onclick="App.handleClick();return false;">Can\'t find a location? Add it to Places.</div>';
+            return '<div class="tt-selectable tt-suggestion" onclick="PlacesTypeahead.handleClick();return false;">Can\'t find a location? Add it to Places.</div>';
           },
           suggestion: Handlebars.compile('' +
             '<div>' +
@@ -231,8 +231,25 @@ $(document).ready(function () {
     keyboard: false,
     show: false
   });
-  App.handleClick = function () {
-    $('.modal').modal('show');
+  PlacesTypeahead.handleClick = function () {
+    $(document.body).append('<div class="modal" id="modal-places-typeahead-submit">' +
+      '<div class="modal-dialog">' +
+        '<div class="modal-content">' +
+          '<div class="modal-header">' +
+            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+              '<span aria-hidden="true">&times;</span>' +
+            '</button>' +
+          '</div>' +
+          '<div class="modal-body">' +
+            '<iframe src="http://insidemaps.nps.gov/places/submit/?dev=true&iframe=true" style="border:none;height:450px;width:100%;"></iframe>' +
+          '</div>' +
+          '<div class="modal-footer">' +
+            '<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>');
+    $('#modal-places-typeahead-submit').modal('show');
   };
   window.NPMap = {
     baseLayers: [

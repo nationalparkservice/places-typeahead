@@ -6,18 +6,7 @@ Autocomplete search for the National Park Service's Places system, built as a Bo
 
 ## Getting started
 
-You can load Bootstrap and places-typeahead directly from the National Park Service's content delivery network:
-
-    <link href="http://www.nps.gov/lib/bootstrap/3.3.2/css/nps-bootstrap.min.css" rel="stylesheet">
-    <link href="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/latest/typeahead.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/latest/typeahead.bundle.min.js"></script>
-
-Note that you'll also need to load jQuery into your page.
-
-## Examples
-
-For some working examples of places-typeahead, visit the [examples page](http://www.nps.gov/tools/places/typeahead/).
+Take a look at index.html for a working example of the plugin.
 
 ## Browser Support
 
@@ -60,6 +49,7 @@ In order to build and test places-typeahead, you'll need to install its dev depe
 * `grunt watch` – Rebuilds *places-typeahead* whenever a source file is modified.
 * `grunt server` – Serves files from the root of *places-typeahead* on localhost:8888. Useful for using *test/playground.html* for debugging/testing.
 * `grunt dev` – Runs `grunt watch` and `grunt server` in parallel.
+* `grunt places` - Builds a working "site" in the `_site` directory.
 
 ## License
 
