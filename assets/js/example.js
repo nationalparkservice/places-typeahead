@@ -1,21 +1,24 @@
-/* globals $, NPMap */
+/* globals $ */
 
 (function () {
   var $parks = $('#configure-park');
+  var $previewTab = $('a[aria-controls="preview"]');
   var $types = $('#configure-type');
   var url = 'https://nps.cartodb.com/api/v2/sql?q=';
 
-  $('a[aria-controls="preview"]').on('shown.bs.tab', function (e) {
-    if (NPMap && NPMap.config && NPMap.config.L) {
-      NPMap.config.L.invalidateSize();
+  $previewTab.on('shown.bs.tab', function (e) {
+    var map = $('#places-typeahead').placesTypeahead('getMap');
+
+    if (typeof map === 'object') {
+      map.invalidateSize();
     }
   });
   $('#configure form').submit(function () {
-    // TODO: Need to update the "Code" tab too.
-
     var park = $parks.val();
     var type = $types.val();
     var filter;
+
+    $previewTab.tab('show');
 
     if (type === 'all') {
       filter = 'All types';
@@ -31,6 +34,13 @@
       filter += '"' + $('#configure-park option:selected').text() + '"';
     }
 
+    $('#places-typeahead')
+      .val(null)
+      .placesTypeahead('destroy');
+    $('#places-typeahead').placesTypeahead({
+      parks: park === 'all' ? null : park,
+      types: type === 'all' ? null : type
+    });
     $('.bg-info').html(filter);
     $('#code-example').html('' +
       '&lt;div class="form-group"&gt;\n' +

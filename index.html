@@ -26,10 +26,10 @@
       </div>
       <div class="tabpanel" role="tabpanel">
         <ul class="nav nav-tabs" role="tablist">
-          <li class="active" role="presentation">
+          <li role="presentation">
             <a aria-controls="configure" data-toggle="tab" href="#configure" role="tab">Configure</a>
           </li>
-          <li role="presentation">
+          <li class="active" role="presentation">
             <a aria-controls="preview" data-toggle="tab" href="#preview" role="tab">Preview</a>
           </li>
           <li role="presentation">
@@ -37,7 +37,7 @@
           </li>
         </ul>
         <div class="tab-content">
-          <div class="active tab-pane" id="configure" role="tabpanel">
+          <div class="tab-pane" id="configure" role="tabpanel">
             <div class="row">
               <div class="col-md-12">
                 <p>Use this form to configure the Places Typeahead plugin. Once you've made the configuration changes, click "Apply Configuration" to update the "Preview" and "Code" tabs.</p>
@@ -61,41 +61,17 @@
               </div>
             </div>
           </div>
-          <div class="tab-pane" id="preview" role="tabpanel">
-            <div class="row" style="margin-bottom:10px;">
-              <div class="col-md-6">
+          <div class="active tab-pane" id="preview" role="tabpanel">
+            <div class="row">
+              <div class="col-md-12">
                 <div>
                   <div class="form-group">
                     <label for="places-typeahead">Start typing the name of a place to search for a point of interest.</label>
-                    <!-- TODO: autocomplete and type should be added by plugin. -->
-                    <input autocomplete="false" class="form-control places-typeahead" id="places-typeahead" placeholder="e.g., abo visitor center, old faithful, macarthur meadow..." type="text">
+                    <input class="form-control places-typeahead" id="places-typeahead" placeholder="e.g., abo visitor center, old faithful, macarthur meadow..." type="text">
                   </div>
-                  <!-- TODO: These should be added by plugin. -->
-                  <!--
-                  <input id="places-typehead-places_id" name="places_id" type="hidden">
-                  <input id="places-typehead-lat" name="lat" type="hidden">
-                  <input id="places-typehead-lng" name="lng" type="hidden">
-                  <input id="places-typehead-name" name="name" type="hidden">
-                  <input id="places-typehead-type" name="type" type="hidden">
-                  -->
                 </div>
               </div>
             </div>
-            <!-- TODO: This should be added by plugin. -->
-            <!--
-            <div class="row">
-              <div class="col-md-12">
-                <div class="places-typeahead-map" id="map"></div>
-              </div>
-            </div>
-            <div class="places-typeahead-edit row">
-              <div class="col-md-12">
-                <div class="text-center">
-                  <span style="margin-right:5px;">Location, name, or type incorrect?</span><a class="btn btn-primary" href="#" target="_blank">Edit this Place</a>
-                </div>
-              </div>
-            </div>
-            -->
           </div>
           <div class="tab-pane" id="code" role="tabpanel">
             <div class="row">
@@ -117,8 +93,5 @@
     <script src="http://www.nps.gov/lib/bootstrap/3.3.2/js/nps-bootstrap.min.js"></script>
     <script src="dist/places-typeahead.js"></script>
     <script src="assets/js/example.js"></script>
-    <script>
-      $('.places-typeahead').placesTypeahead();
-    </script>
   </body>
 </html>
