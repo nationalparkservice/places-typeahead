@@ -18,8 +18,20 @@ Is it possible to "wrap" typeahead.js with the functionality you need and still 
 
 var PlacesTypeahead = {};
 
+/*
+var PT = (function () {
+  return {
+    setFilter: function (parks, types) {
+
+    }
+  };
+})();
+*/
+
+
+
+
 $(document).ready(function () {
-  var $preview = $('#preview');
   var $typeahead = $('.typeahead');
   var baseWhere = 'WHERE points_of_interest.unit_code=parks.unit_code AND points_of_interest.name IS NOT NULL AND points_of_interest.name ilike \'%25{{query}}%25\'';
   var filterPark = null;
@@ -33,10 +45,26 @@ $(document).ready(function () {
   var map;
   var marker;
 
+  function clear () {
+    var options = map.options;
+
+    if (marker) {
+      map.removeLayer(marker);
+    }
+
+    map.setView(options.center, options.zoom);
+    $('#places-typeahead-lat').val(null);
+    $('#places-typeahead-lng').val(null);
+    $('#places-typeahead-name').val(null);
+    $('#places-typeahead-places_id').val(null);
+    $('#places-typeahead-type').val(null);
+    $('.places-typeahead-edit').hide();
+  }
   function createTypeahead () {
     var $spinner = $('.fa-spinner');
 
     $typeahead
+      .on('input', clear)
       .typeahead({
         highlight: true,
         valueKey: 'name'
@@ -90,34 +118,29 @@ $(document).ready(function () {
       })
       .on('typeahead:asyncrequest', function () {
         $spinner.show();
+        clear();
       })
       .on('typeahead:select', function (e, val) {
         var latLng = {
           lat: val.lat,
           lng: val.lng
         };
-
-        if (marker) {
-          map.removeLayer(marker);
-        }
-
         marker = new L.Marker(latLng, {
           clickable: false
         }).addTo(map);
         map.setView(latLng, 18);
-        $('#preview p').html(JSON.stringify(val, null, 2));
-        $('#preview a').attr('href', 'http://insidemaps.nps.gov/places/edit/#background=mapbox-satellite&id=' + val.places_id + '&map=19.00/' + latLng.lng + '/' + latLng.lat + '&overlays=park-tiles-overlay');
-        $preview.show();
+        $('#places-typeahead-lat').val(val.lat);
+        $('#places-typeahead-lng').val(val.lng);
+        $('#places-typeahead-name').val(val.name);
+        $('#places-typeahead-places_id').val(val.places_id);
+        $('#places-typeahead-type').val(val.type);
+        $('.places-typeahead-edit a').attr('href', 'http://insidemaps.nps.gov/places/edit/#background=mapbox-satellite&id=' + val.places_id + '&map=19.00/' + latLng.lng + '/' + latLng.lat + '&overlays=park-tiles-overlay');
+        $('.places-typeahead-edit').show();
       });
     $typeahead.focus();
   }
 
-  $.getJSON('https://nps.cartodb.com/api/v2/sql?q=SELECT full_name,unit_code FROM parks WHERE the_geom IS NOT NULL ORDER BY full_name', function (response) {
-    parks = response.rows;
-  });
-  $.getJSON('https://nps.cartodb.com/api/v2/sql?q=SELECT DISTINCT type FROM points_of_interest ORDER BY type', function (response) {
-    types = response.rows;
-  });
+  /*
   $('.input-group .btn-primary')
     .click(function () {
       $(this)
@@ -225,6 +248,7 @@ $(document).ready(function () {
           $type.val(filterType);
         }
       });
+  */
   createTypeahead();
   $('.modal').modal({
     backdrop: 'static',
@@ -256,14 +280,21 @@ $(document).ready(function () {
       'nps-parkTilesImagery',
       'nps-parkTiles'
     ],
+    boxZoom: false,
     div: 'map',
+    doubleClickZoom: false,
+    dragging: false,
+    homeControl: false,
     hooks: {
       init: function (callback) {
         map = NPMap.config.L;
         callback();
       }
     },
-    scrollWheelZoom: false
+    keyboard: false,
+    scrollWheelZoom: false,
+    smallzoomControl: false,
+    touchZoom: false
   };
 
   s.src = 'http://www.nps.gov/lib/npmap.js/2.0.0/npmap-bootstrap.min.js';

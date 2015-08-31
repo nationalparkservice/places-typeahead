@@ -1,6 +1,6 @@
 /*!
- * typeahead.js 0.11.1
- * https://github.com/twitter/typeahead.js
+ * places-typeahead 0.11.1
+ * https://github.com/nationalparkservice/places-typeahead/
  * Copyright 2013-2015 Twitter, Inc. and other contributors; Licensed MIT
  */
 

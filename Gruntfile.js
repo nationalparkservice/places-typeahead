@@ -47,7 +47,10 @@ module.exports = function (grunt) {
     },
     concurrent: {
       options: { logConcurrentOutput: true },
-      dev: ['server', 'watch']
+      dev: [
+        'server',
+        'watch'
+      ]
     },
     connect: {
       server: {
@@ -61,6 +64,12 @@ module.exports = function (grunt) {
         expand: true,
         src: [
           '**/*'
+        ]
+      },
+      css: {
+        dest: 'dist/places-typeahead.css',
+        src: [
+          'src/places_typeahead/places_typeahead.css'
         ]
       },
       dist: {
@@ -213,6 +222,31 @@ module.exports = function (grunt) {
       options: {
         banner: '<%= banner %>'
       },
+      placesTypeahead: {
+        options: {
+          mangle: false,
+          beautify: true,
+          compress: false
+        },
+        src: [
+          'libs/handlebars/handlebars.js',
+          '<%= buildDir %>/typeahead.bundle.js',
+          'src/places_typeahead/places_typeahead.js'
+        ],
+        dest: '<%= buildDir %>/places-typeahead.js'
+      },
+      placesTypeaheadMin: {
+        options: {
+          mangle: true,
+          compress: {}
+        },
+        src: [
+          'libs/handlebars/handlebars.min.js',
+          '<%= buildDir %>/typeahead.bundle.js',
+          'src/places_typeahead/places_typeahead.js'
+        ],
+        dest: '<%= buildDir %>/places-typeahead.min.js'
+      },
       typeahead: {
         options: {
           mangle: false,
@@ -251,6 +285,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-step');
   grunt.loadNpmTasks('grunt-umd');
   grunt.registerTask('build', [
+    'copy:css',
     'uglify:concatBloodhound',
     'uglify:concatTypeahead',
     'umd:bloodhound',
@@ -261,6 +296,8 @@ module.exports = function (grunt) {
     'uglify:typeaheadMin',
     'uglify:bundle',
     'uglify:bundleMin',
+    'uglify:placesTypeahead',
+    'uglify:placesTypeaheadMin',
     'sed:version'
   ]);
   grunt.registerTask('default', 'build');
@@ -279,10 +316,6 @@ module.exports = function (grunt) {
 
     grunt.file.write('package.json', pkg);
   });
-  grunt.registerTask('places', [
-    'clean:site',
-    'copy'
-  ]);
   grunt.registerTask('release', '#shipit', function (version) {
     var curVersion = grunt.config.get('version');
 
