@@ -1,6 +1,7 @@
 /* globals $ */
 
 (function () {
+  var $dev = $('#configure-dev');
   var $parks = $('#configure-park');
   var $previewTab = $('a[aria-controls="preview"]');
   var $types = $('#configure-type');
@@ -14,6 +15,7 @@
     }
   });
   $('#configure form').submit(function () {
+    var dev = $dev.prop('checked');
     var park = $parks.val();
     var type = $types.val();
     var filter;
@@ -43,9 +45,9 @@
     });
     $('.bg-info').html(filter);
     $('#code-example').html('' +
-      '&lt;div class="form-group"&gt;\n' +
-        '  &lt;label for="places-typeahead">Start typing the name of a place to search for a point of interest.&lt;/label&gt;\n' +
-        '  &lt;input class="form-control places-typeahead"' + (park === 'all' ? '' : ' data-parks="' + park + '"') + (type === 'all' ? '' : ' data-types="' + type + '"') + ' id="places-typeahead" placeholder="e.g., abo visitor center, old faithful, macarthur meadow..." type="text"&gt;\n' +
+      '&lt;div class="form-group"&gt;<br>' +
+        '&nbsp;&nbsp;&lt;label for="places-typeahead">Start typing the name of a place to search for a point of interest.&lt;/label&gt;<br>' +
+        '&nbsp;&nbsp;&lt;input class="form-control places-typeahead"' + (dev ? ' data-dev="true"' : '') + (park === 'all' ? '' : ' data-parks="' + park + '"') + (type === 'all' ? '' : ' data-types="' + type + '"') + ' id="places-typeahead" placeholder="e.g., abo visitor center, old faithful, macarthur meadow..." type="text"&gt;<br>' +
       '&lt;/div&gt;' +
     '');
     return false;

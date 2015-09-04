@@ -5247,11 +5247,12 @@ var Handlebars = function() {
 
 +function($) {
     "use strict";
-    var url = "https://nps.cartodb.com/api/v2/sql?q=SELECT points_of_interest.places_id,points_of_interest.name,points_of_interest.places_id,parks.full_name,parks.unit_code,st_y(points_of_interest.the_geom) as lat,st_x(points_of_interest.the_geom) as lng,points_of_interest.type FROM points_of_interest,parks {{where}} ORDER BY points_of_interest.name,parks.full_name LIMIT(10)";
-    var $editWrapper;
+    var url = "https://nps.cartodb.com/api/v2/sql?q=SELECT points_of_interest.name as n,points_of_interest.places_id as i,parks.full_name as f,parks.unit_code as u,st_y(points_of_interest.the_geom) as y,st_x(points_of_interest.the_geom) as x,points_of_interest.type as t FROM points_of_interest,parks {{where}} ORDER BY points_of_interest.name,parks.full_name LIMIT(10)";
+    var $help;
     var $lat;
     var $lng;
     var $mapWrapper;
+    var $modal;
     var $parent;
     var $placesId;
     var $spinner;
@@ -5261,30 +5262,34 @@ var Handlebars = function() {
     var old;
     var Typeahead;
     var where;
+    var whereFetch;
     function clear() {
         var options = map.options;
         if (marker) {
             map.removeLayer(marker);
         }
         map.setView(options.center, options.zoom);
-        $parent.children("input:hidden").val(null).children(".pt-edit").hide();
+        $help.html("Nothing selected.");
+        $parent.children("input:hidden").val(null);
     }
     function create(element, options) {
         var $element = $(element);
-        var $edit;
         function callback() {
             $parent = $element.parent();
             $parent.addClass("pt-wrapper");
-            $element.attr("autocomplete", "false").after("" + '<i class="fa fa-lg fa-spin fa-spinner"></i>' + '<input name="lat" type="hidden">' + '<input name="lng" type="hidden">' + '<input name="places_id" type="hidden">' + '<input name="type" type="hidden">' + '<div class="pt-map-wrapper row">' + '<div class="col-md-12">' + '<div class="pt-map"></div>' + "</div>" + "</div>" + '<div class="pt-edit-wrapper row">' + '<div class="col-md-12">' + '<div class="pt-edit text-center">' + '<span style="margin-right:5px;">Location, name, or type incorrect?</span><a class="btn btn-primary" href="#" target="_blank">Edit this Place</a>' + "</div>" + "</div>" + "</div>" + "").on("input", clear).typeahead({
+            $element.attr("autocomplete", "false").after("" + '<i class="fa fa-lg fa-spin fa-spinner"></i>' + '<p class="help-block">Nothing selected.</p>' + '<input name="lat" type="hidden">' + '<input name="lng" type="hidden">' + '<input name="places_id" type="hidden">' + '<input name="type" type="hidden">' + '<div class="pt-map-wrapper row">' + '<div class="col-md-12">' + '<div class="pt-map"></div>' + "</div>" + "</div>" + "").on("input", clear).typeahead({
                 highlight: true,
                 valueKey: "name"
             }, {
+                async: true,
                 display: "name",
+                name: "points_of_interest",
                 source: new Bloodhound({
                     datumTokenizer: function(datum) {
                         return Bloodhound.tokenizers.whitespace(datum.name);
                     },
                     identify: function(obj) {
+                        console.log(obj);
                         return obj.places_id;
                     },
                     queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -5292,13 +5297,13 @@ var Handlebars = function() {
                         filter: function(response) {
                             return $.map(response.rows, function(row) {
                                 return {
-                                    lat: row.lat,
-                                    lng: row.lng,
-                                    name: row.name,
-                                    park: row.full_name,
-                                    places_id: row.places_id,
-                                    type: row.type,
-                                    unit_code: row.unit_code
+                                    lat: row.y,
+                                    lng: row.x,
+                                    name: row.n,
+                                    park: row.f,
+                                    places_id: row.i,
+                                    type: row.t,
+                                    unit_code: row.u
                                 };
                             });
                         },
@@ -5311,9 +5316,16 @@ var Handlebars = function() {
                 }),
                 templates: {
                     notFound: function(query) {
-                        return "" + '<div class="tt-suggestion tt-selectable" onclick="PlacesTypeahead.handleClick();return false;" onkeydown="console.log(1);return false;" tabindex="1">Can\'t find a location? Add it to Places.</div>' + "";
+                        return $("" + '<div class="tt-suggestion">Can\'t find a location? Click here to add it to Places.</div>' + "").click(function() {
+                            $parent.append('<div class="modal pt-submit">' + '<div class="modal-dialog">' + '<div class="modal-content">' + '<div class="modal-header">' + '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' + '<span aria-hidden="true">&times;</span>' + "</button>" + "</div>" + '<div class="modal-body">' + '<iframe src="http://insidemaps.nps.gov/places/submit/?dev=true&iframe=true" style="border:none;height:450px;width:100%;"></iframe>' + "</div>" + '<div class="modal-footer">' + '<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>' + "</div>" + "</div>" + "</div>" + "</div>");
+                            $modal = $($parent.find(".pt-submit")[0]);
+                            $modal.modal({
+                                backdrop: "static",
+                                keyboard: false
+                            });
+                        });
                     },
-                    suggestion: Handlebars.compile("" + "<div>" + "<strong>{{name}}</strong><br><em>{{#if type}}{{type}}</em> in {{/if}}<em>{{park}}</em>" + "</div>" + "")
+                    suggestion: Handlebars.compile("" + "<div>" + '<strong>{{name}}</strong><br><span class="no-highlight"><em>{{#if type}}{{type}}</em> in {{/if}}<em>{{park}}</em></span>' + "</div>" + "")
                 }
             }).on("typeahead:asynccancel", function() {
                 $spinner.hide();
@@ -5321,7 +5333,6 @@ var Handlebars = function() {
                 $spinner.hide();
             }).on("typeahead:asyncrequest", function() {
                 $spinner.show();
-                clear();
             }).on("typeahead:select", function(e, val) {
                 var latLng = {
                     lat: val.lat,
@@ -5335,11 +5346,9 @@ var Handlebars = function() {
                 $lng.val(val.lng);
                 $placesId.val(val.places_id);
                 $type.val(val.type);
-                $($edit.find("a")[0]).attr("href", "http://insidemaps.nps.gov/places/edit/#background=mapbox-satellite&id=" + val.places_id + "&map=19.00/" + latLng.lng + "/" + latLng.lat + "&overlays=park-tiles-overlay");
-                $edit.show();
+                $help.html('<em>"' + val.type + '"</em> in <em>"' + val.park + '"</em>. Something look incorrect? Fix it with <a href="http://insidemaps.nps.gov/places/edit/#background=mapbox-satellite&id=' + val.places_id + "&map=19.00/" + latLng.lng + "/" + latLng.lat + '&overlays=park-tiles-overlay" target="_blank">Places Editor</a>.');
             });
-            $edit = $($parent.find(".pt-edit")[0]);
-            $editWrapper = $($parent.find(".pt-edit-wrapper")[0]);
+            $help = $($parent.find(".help-block")[0]);
             $lat = $($parent.find('input[name="lat"]')[0]);
             $lng = $($parent.find('input[name="lng"]')[0]);
             $mapWrapper = $($parent.find(".pt-map-wrapper")[0]);
@@ -5361,7 +5370,13 @@ var Handlebars = function() {
         }
         if (typeof window.L !== "object") {
             $("head").append($('<link rel="stylesheet">').attr("href", "http://www.nps.gov/lib/npmap.js/2.0.0/npmap.min.css"));
-            $.getScript("http://www.nps.gov/lib/npmap.js/2.0.0/npmap.min.js", callback);
+            $.ajax({
+                cache: true,
+                dataType: "script",
+                success: callback,
+                type: "GET",
+                url: "http://www.nps.gov/lib/npmap.js/2.0.0/npmap.min.js"
+            });
         } else {
             callback();
         }
@@ -5384,6 +5399,9 @@ var Handlebars = function() {
             map.options.center = map.getCenter();
             map.options.zoom = map.getZoom();
         }
+        setTimeout(function() {
+            map.invalidateSize();
+        }, 300);
     }
     Typeahead = function(element, options) {
         this.$element = $(element);
@@ -5398,31 +5416,43 @@ var Handlebars = function() {
     };
     Typeahead.prototype._setFilter = function(obj) {
         where = "WHERE points_of_interest.unit_code=parks.unit_code AND points_of_interest.name IS NOT NULL AND points_of_interest.name ilike '%25{{query}}%25'";
+        whereFetch = "WHERE points_of_interest.unit_code=parks.unit_code AND points_of_interest.name IS NOT NULL";
         if (obj) {
             var parks = obj.parks;
             var types = obj.types;
+            var add;
             if (parks) {
+                add = " AND (";
                 parks = parks.split(",");
-                where += " AND (";
+                where += add;
+                whereFetch += add;
                 $.each(parks, function(i, park) {
-                    where += "points_of_interest.unit_code='" + park + "' AND ";
+                    add = "points_of_interest.unit_code='" + park + "' AND ";
+                    where += add;
+                    whereFetch += add;
                 });
                 where = where.slice(0, where.length - 5) + ")";
+                whereFetch = whereFetch.slice(0, whereFetch.length - 5) + ")";
             }
             if (types) {
+                add = " AND (";
                 types = types.split(",");
-                where += " AND (";
+                where += add;
+                whereFetch += add;
                 $.each(types, function(i, type) {
-                    where += "points_of_interest.type='" + type + "' AND ";
+                    add = "points_of_interest.type='" + type + "' AND ";
+                    where += add;
+                    whereFetch += add;
                 });
                 where = where.slice(0, where.length - 5) + ")";
+                whereFetch = whereFetch.slice(0, whereFetch.length - 5) + ")";
             }
         }
     };
     Typeahead.prototype.destroy = function() {
         this.$element.typeahead("destroy").removeAttr("autocomplete");
         $parent.removeClass("pt-wrapper");
-        $editWrapper.remove();
+        $help.remove();
         $lat.remove();
         $lng.remove();
         $mapWrapper.remove();

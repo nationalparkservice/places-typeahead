@@ -199,8 +199,7 @@ fieldset[disabled] .twitter-typeahead .tt-input {
 .tt-dropdown-menu .tt-suggestion,
 .tt-menu .tt-suggestion {
   display: block;
-  padding: 3px 20px;
-  /* padding: 6px 12px; */
+  padding: 6px 12px;
   clear: both;
   font-weight: normal;
   line-height: 1.42857143;
@@ -216,6 +215,12 @@ fieldset[disabled] .twitter-typeahead .tt-input {
   background-color: #916800;
   color: #fff;
 }
+  .tt-dropdown-menu .tt-suggestion.tt-cursor .tt-highlight,
+  .tt-menu .tt-suggestion.tt-cursor .tt-highlight,
+  .tt-dropdown-menu .tt-suggestion:hover .tt-highlight,
+  .tt-menu .tt-suggestion:hover .tt-highlight {
+    background-color: #916800;
+  }
 .tt-dropdown-menu .tt-suggestion.tt-cursor a,
 .tt-menu .tt-suggestion.tt-cursor a,
 .tt-dropdown-menu .tt-suggestion:hover a,
@@ -225,4 +230,20 @@ fieldset[disabled] .twitter-typeahead .tt-input {
 .tt-dropdown-menu .tt-suggestion p,
 .tt-menu .tt-suggestion p {
   margin: 0;
+}
+.tt-highlight {
+  background-color: yellow;
+}
+.no-highlight,
+.no-highlight strong.tt-highlight {
+  background-color: white !important;
+}
+  .no-highlight strong {
+    font-weight: normal !important;
+  }
+.tt-menu .tt-suggestion.tt-cursor .no-highlight,
+.tt-menu .tt-suggestion.tt-cursor .no-highlight strong.tt-highlight,
+.tt-menu .tt-suggestion:hover .no-highlight,
+.tt-menu .tt-suggestion:hover .no-highlight strong.tt-highlight {
+  background-color: #916800 !important;
 }

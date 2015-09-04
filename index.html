@@ -7,7 +7,7 @@
     <link href="http://www.nps.gov/lib/bootstrap/3.3.2/css/nps-bootstrap.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/css/example.css" rel="stylesheet">
-    <link href="dist/places-typeahead.css" rel="stylesheet">
+    <link href="dist/places-typeahead.min.css" rel="stylesheet">
     <link href="http://www.nps.gov/lib/assets/img/favicon.ico" rel="shortcut icon">
     <link href="http://www.nps.gov/lib/assets/img/apple-touch-icon-144x144-precomposed.png" rel="apple-touch-icon-precomposed" sizes="144x144">
     <link href="http://www.nps.gov/lib/assets/img/apple-touch-icon-114x114-precomposed.png" rel="apple-touch-icon-precomposed" sizes="114x114">
@@ -54,6 +54,11 @@
                       <option value="all">All Types</option>
                     </select>
                   </div>
+                  <div class="checkbox">
+                    <label>
+                      <input id="configure-dev" type="checkbox" value="">Submit inserts and updates to development Places database?
+                    </label>
+                  </div>
                   <div class="form-buttons">
                     <button class="btn btn-primary" type="submit">Apply Configuration</button>
                   </div>
@@ -77,12 +82,9 @@
             <div class="row">
               <div class="col-md-12">
                 <p>Load NPS Bootstrap, jQuery, and the CSS/JavaScript for the plugin:</p>
-                <pre><code>&lt;link href="http://www.nps.gov/lib/bootstrap/3.3.2/css/nps-bootstrap.min.css" rel="stylesheet"&gt;<br>&lt;link href="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/{{ version }}/places-typeahead.min.css" rel="stylesheet"&gt;<br>&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"&gt;&lt;/script&gt;<br>&lt;script src="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/{{ version }}/places-typeahead.min.js"&gt;&lt;/script&gt;</code></pre>
+                <pre><code>&lt;link href="http://www.nps.gov/lib/bootstrap/3.3.2/css/nps-bootstrap.min.css" rel="stylesheet"&gt;<br>&lt;link href="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/0.11.1/places-typeahead.min.css" rel="stylesheet"&gt;<br>&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"&gt;&lt;/script&gt;<br>&lt;script src="http://www.nps.gov/lib/bootstrap/plugins/places-typeahead/0.11.1/places-typeahead.min.js"&gt;&lt;/script&gt;</code></pre>
                 <p>Then insert an input and instantiate the plugin:</p>
-                <pre><code id="code-example">&lt;div class="form-group"&gt;
-  &lt;label for="places-typeahead">Start typing the name of a place to search for a point of interest.&lt;/label&gt;
-  &lt;input class="form-control places-typeahead" id="places-typeahead" placeholder="e.g., abo visitor center, old faithful, macarthur meadow..." type="text"&gt;
-&lt;/div&gt;</code></pre>
+                <pre><code id="code-example">&lt;div class="form-group"&gt;<br>&nbsp;&nbsp;&lt;label for="places-typeahead">Start typing the name of a place to search for a point of interest.&lt;/label&gt;<br>&nbsp;&nbsp;&lt;input class="form-control places-typeahead" id="places-typeahead" placeholder="e.g., abo visitor center, old faithful, macarthur meadow..." type="text"&gt;<br>&lt;/div&gt;</code></pre>
               </div>
             </div>
           </div>
@@ -91,7 +93,7 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="http://www.nps.gov/lib/bootstrap/3.3.2/js/nps-bootstrap.min.js"></script>
-    <script src="dist/places-typeahead.js"></script>
+    <script src="dist/places-typeahead.min.js"></script>
     <script src="assets/js/example.js"></script>
   </body>
 </html>
